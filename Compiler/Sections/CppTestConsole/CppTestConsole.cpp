@@ -133,6 +133,27 @@ char* subString(char* str, int left, int right) {
 	return subStr;
 }
 
+//char* isSpecialCharacter(char str[]) {
+//	char returnedArray[100];
+//
+//	for (int i = 0; i < strlen(str); ++i) {
+//
+//		if (str[i] == '!' || str[i] == '@' || str[i] == '#' || str[i] == '$'
+//			|| str[i] == '%' || str[i] == '^' || str[i] == '&' || str[i] == '*'
+//			|| str[i] == '(' || str[i] == ')' || str[i] == '-' || str[i] == '{'
+//			|| str[i] == '}' || str[i] == '[' || str[i] == ']' || str[i] == ':'
+//			|| str[i] == ';' || str[i] == '"' || str[i] == '\'' || str[i] == '<'
+//			|| str[i] == '>' || str[i] == '.' || str[i] == '/' || str[i] == '?'
+//			|| str[i] == '~' || str[i] == '`')
+//		{
+//			printf("Code: %c\n", str[i]);
+//			return returnedArray[0];
+//		}
+//	}
+//
+//	return false;
+//}
+
 void discoverTokens(char* str) {
 	int left = 0;
 	int right = 0;
@@ -155,9 +176,13 @@ void discoverTokens(char* str) {
 		else if (isValidDelimiter(str[right]) && left != right || (right == length && left != right)) {
 			char* subStr = subString(str, left, right - 1);
 
-			if (isValidKeyword(subStr) == true) {
+			if (isValidKeyword(subStr)) {
 				printf("Keyword: %s\n", subStr);
 			}
+
+			/*if (isSpecialCharacter(str)) {
+
+			}*/
 
 			else if (isValidInteger(subStr) || isRealNumber(subStr)) {
 				printf("Numeric Constant: %s\n", subStr);
@@ -178,7 +203,7 @@ void discoverTokens(char* str) {
 }
 
 int main() {
-	char expression[100] = "for(int i = 0 ; i < 5; i++) { if(x > y) {return 0;} }";
+	char expression[] = "for(int i = 0 ; i < 5; i++) { if(x > y) {return 0;} }";
 
 	printf("You Expression is : '%s'\n", expression);
 
