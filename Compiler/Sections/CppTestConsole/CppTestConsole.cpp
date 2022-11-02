@@ -152,26 +152,22 @@ void discoverTokens(char* str) {
 			right++;
 			left = right;
 		}
-		else if (isValidDelimiter(str[right]) == true && left != right || (right == length && left != right)) {
+		else if (isValidDelimiter(str[right]) && left != right || (right == length && left != right)) {
 			char* subStr = subString(str, left, right - 1);
 
 			if (isValidKeyword(subStr) == true) {
 				printf("Keyword: %s\n", subStr);
 			}
 
-			else if (isValidInteger(subStr) == true) {
-				printf("Integer: %s\n", subStr);
+			else if (isValidInteger(subStr) || isRealNumber(subStr)) {
+				printf("Numeric Constant: %s\n", subStr);
 			}
 
-			else if (isRealNumber(subStr) == true) {
-				printf("Real Number: %s\n", subStr);
-			}
-
-			else if (isvalidIdentifier(subStr) == true && isValidDelimiter(str[right - 1]) == false) {
+			else if (isvalidIdentifier(subStr) && !isValidDelimiter(str[right - 1])) {
 				printf("Valid Identifier: %s\n", subStr);
 			}
 
-			else if (isvalidIdentifier(subStr) == false && isValidDelimiter(str[right - 1]) == false) {
+			else if (!isvalidIdentifier(subStr) && !isValidDelimiter(str[right - 1])) {
 				printf("Invalid Identifier: %s\n", subStr);
 			}
 
@@ -182,7 +178,7 @@ void discoverTokens(char* str) {
 }
 
 int main() {
-	char expression[100] = "int result = x + y;";
+	char expression[100] = "for(int i = 0 ; i < 5; i++) { if(x > y) {return 0;} }";
 
 	printf("You Expression is : '%s'\n", expression);
 
