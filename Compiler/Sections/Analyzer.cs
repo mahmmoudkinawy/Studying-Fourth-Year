@@ -2,17 +2,17 @@
 public class Analyzer
 {
     private readonly string[] _keywords = Repository.Keywords;
-    private readonly string[] _separator = Repository.SpecialCharacters;
+    private readonly string[] _specialCharacters = Repository.SpecialCharacters;
     private readonly string[] _comments = Repository.Comments;
     private readonly string[] _operators = Repository.Operators;
 
-    public string Parse(string item)
+    private string Parse(string item)
     {
         var str = new StringBuilder();
 
         if (int.TryParse(item, out int ok))
         {
-            str.AppendLine("(numerical constant, " + item + ") ");
+            str.AppendLine($"Numerical: {item}");
             return str.ToString();
         }
 
@@ -23,28 +23,28 @@ public class Analyzer
 
         if (CheckKeyword(item))
         {
-            str.AppendLine("(keyword, " + item + ") ");
+            str.AppendLine($"Keyword: {item}");
             return str.ToString();
         }
 
         if (CheckOperator(item))
         {
-            str.AppendLine("(operator, " + item + ") ");
+            str.AppendLine($"Operator: {item}");
             return str.ToString();
         }
 
         if (CheckDelimiter(item))
         {
-            str.AppendLine("(separator, " + item + ") ");
+            str.AppendLine($"Special Characters: {item}");
             return str.ToString();
         }
 
-        str.AppendLine("(identifier, " + item + ") ");
+        str.AppendLine($"Identifier: {item}");
         return str.ToString();
     }
 
     private bool CheckOperator(string str) => _operators.Contains(str);
-    private bool CheckDelimiter(string str) => _separator.Contains(str);
+    private bool CheckDelimiter(string str) => _specialCharacters.Contains(str);
     private bool CheckKeyword(string str) => _keywords.Contains(str);
     private bool CheckComments(string str) => _comments.Contains(str);
 
