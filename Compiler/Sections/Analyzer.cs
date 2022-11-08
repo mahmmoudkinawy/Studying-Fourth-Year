@@ -1,23 +1,10 @@
-﻿using System.Text;
-
-namespace Lexica;
+﻿namespace Lexica;
 public class Analyzer
 {
-    private readonly string[] _keywords = Array.Empty<string>();
-
-    private readonly string[] _specialCharacters = Array.Empty<string>();
-
-    private readonly string[] _comments = Array.Empty<string>();
-
-    private readonly string[] _operators = Array.Empty<string>();
-
-    public Analyzer()
-    {
-        _keywords = Repository.Keywords;
-        _specialCharacters = Repository.SpecialCharacters;
-        _comments = Repository.Comments;
-        _operators = Repository.Operators;
-    }
+    private readonly string[] _keywords = Repository.Keywords;
+    private readonly string[] _separator = Repository.SpecialCharacters;
+    private readonly string[] _comments = Repository.Comments;
+    private readonly string[] _operators = Repository.Operators;
 
     public string Parse(string item)
     {
@@ -25,7 +12,7 @@ public class Analyzer
 
         if (int.TryParse(item, out int ok))
         {
-            str.Append("(numerical constant, " + item + ") ");
+            str.AppendLine("(numerical constant, " + item + ") ");
             return str.ToString();
         }
 
@@ -36,45 +23,32 @@ public class Analyzer
 
         if (CheckKeyword(item))
         {
-            str.Append("(keyword, " + item + ") ");
+            str.AppendLine("(keyword, " + item + ") ");
             return str.ToString();
         }
 
         if (CheckOperator(item))
         {
-            str.Append("(operator, " + item + ") ");
+            str.AppendLine("(operator, " + item + ") ");
             return str.ToString();
         }
 
         if (CheckDelimiter(item))
         {
-            str.Append("(separator, " + item + ") ");
+            str.AppendLine("(separator, " + item + ") ");
             return str.ToString();
         }
 
-        if (SpecialCharacter(item))
-        {
-            str.Append("(Special Character, " + item + ") ");
-            return str.ToString();
-        }
-
-
-        str.Append("(identifier, " + item + ") ");
+        str.AppendLine("(identifier, " + item + ") ");
         return str.ToString();
     }
 
+    private bool CheckOperator(string str) => _operators.Contains(str);
+    private bool CheckDelimiter(string str) => _separator.Contains(str);
+    private bool CheckKeyword(string str) => _keywords.Contains(str);
+    private bool CheckComments(string str) => _comments.Contains(str);
 
-    public bool CheckOperator(string str) => _operators.Contains(str);
-
-    public bool SpecialCharacter(string str) => _specialCharacters.Contains(str);
-
-    public bool CheckDelimiter(string str) => _comments.Contains(str);
-
-    public bool CheckKeyword(string str) => _keywords.Contains(str);
-
-    public bool CheckComments(string str) => _comments.Contains(str);
-
-    public string GetNextLexicalAtom(ref string item)
+    public string GetTokens(ref string item)
     {
         var token = new StringBuilder();
         for (int i = 0; i < item.Length; i++)
@@ -136,7 +110,8 @@ public class Analyzer
                 }
                 else
                 {
-                    if (item[i] == '-' && Int32.TryParse(item[i + 1].ToString(), out int ok))
+                    int ok;
+                    if (item[i] == '-' && Int32.TryParse(item[i + 1].ToString(), out ok))
                         continue;
                     token.Append(item[i]);
                     item = item.Remove(i, 1);
@@ -144,7 +119,8 @@ public class Analyzer
                 }
 
             }
-            else if (item[i] == '\'')
+            else
+                if (item[i] == '\'')
             {
                 int j = i + 1;
                 if (item[j] == '\\')
@@ -156,7 +132,8 @@ public class Analyzer
                 item = item.Remove(i, j - i + 1);
                 return token.ToString();
             }
-            else if (item[i] == '"')
+            else
+                if (item[i] == '"')
             {
                 int j = i + 1;
                 while (item[j] != '"')
@@ -165,17 +142,16 @@ public class Analyzer
                 item = item.Remove(i, j - i + 1);
                 return token.ToString();
             }
-            else if
-                (item[i + 1].ToString().Equals(" ") ||
-                CheckDelimiter(item[i + 1].ToString()) == true ||
-                CheckOperator(item[i + 1].ToString()) == true)
+            else
+                if (item[i + 1].ToString().Equals(" ") || CheckDelimiter(item[i + 1].ToString()) == true || CheckOperator(item[i + 1].ToString()) == true)
             {
                 if (Parse(item.Substring(0, i + 1)).Contains("numerical constant") && item[i + 1] == '.')
                 {
                     int j = i + 2;
                     while (item[j].ToString().Equals(" ") == false && CheckDelimiter(item[j].ToString()) == false && CheckOperator(item[j].ToString()) == false)
                         j++;
-                    if (int.TryParse(item.Substring(i + 2, j - i - 2), out int ok))
+                    int ok;
+                    if (Int32.TryParse(item.Substring(i + 2, j - i - 2), out ok))
                     {
                         token.Append("(numerical constant, ").Append(item.Substring(0, j)).Append(") ");
                         item = item.Remove(0, j);

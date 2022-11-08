@@ -1,21 +1,14 @@
-﻿using Lexica;
+﻿//string text = File.ReadAllText("D:\\CPP\\CSharpConsoleTest\\Program.cs");
+string text = "int x = 5 + b + x;";
 
-string text = File.ReadAllText("D:\\CPP\\Lexica\\Analyzer.cs");
-string[] elements = text.Split(new char[] { ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 var analyzer = new Analyzer();
-analyzer.Parse(text);
 
-while (text != null)
+Console.WriteLine("=============Tokens===============");
+while (text is not null)
 {
     text = text.Trim(' ', '\t');
-    string token = analyzer.GetNextLexicalAtom(ref text);
-    Console.WriteLine(token);
+    string token = analyzer.GetTokens(ref text);
+    Console.Write(token);
 }
 
-foreach (string item in elements)
-{
-    analyzer.Parse(item);
-}
-
-Console.WriteLine(text);
 Console.ReadKey();

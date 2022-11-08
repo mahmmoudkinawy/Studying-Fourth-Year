@@ -1,5 +1,4 @@
 ﻿namespace Lexica;
-
 public static class Repository
 {
     public static string[] Keywords =
