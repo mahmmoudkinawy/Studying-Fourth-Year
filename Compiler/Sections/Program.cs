@@ -1,5 +1,5 @@
-﻿//string text = File.ReadAllText("D:\\CPP\\CSharpConsoleTest\\Program.cs");
-string text = "int x = 5 + b + x;";
+﻿//var text = File.ReadAllText("D:\\CPP\\CSharpConsoleTest\\Program.cs");
+var text = "int x = 5 + b + x;";
 
 var analyzer = new Analyzer();
 
