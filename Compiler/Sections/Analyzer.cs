@@ -33,7 +33,7 @@ public class Analyzer
             return str.ToString();
         }
 
-        if (CheckDelimiter(item))
+        if (CheckSpecialCharacters(item))
         {
             str.AppendLine($"Special Characters: {item}");
             return str.ToString();
@@ -44,7 +44,7 @@ public class Analyzer
     }
 
     private bool CheckOperator(string str) => _operators.Contains(str);
-    private bool CheckDelimiter(string str) => _specialCharacters.Contains(str);
+    private bool CheckSpecialCharacters(string str) => _specialCharacters.Contains(str);
     private bool CheckKeyword(string str) => _keywords.Contains(str);
     private bool CheckComments(string str) => _comments.Contains(str);
 
@@ -53,9 +53,9 @@ public class Analyzer
         var token = new StringBuilder();
         for (int i = 0; i < item.Length; i++)
         {
-            if (CheckDelimiter(item[i].ToString()))
+            if (CheckSpecialCharacters(item[i].ToString()))
             {
-                if (i + 1 < item.Length && CheckDelimiter(item.Substring(i, 2)))
+                if (i + 1 < item.Length && CheckSpecialCharacters(item.Substring(i, 2)))
                 {
                     token.Append(item.Substring(i, 2));
                     item = item.Remove(i, 2);
@@ -128,7 +128,7 @@ public class Analyzer
                 else
                     j++;
 
-                token.Append("(literal constant, ").Append(item.Substring(i, j - i + 1)).Append(") ");
+                token.Append("Comment: ").Append(item.Substring(i, j - i + 1)).Append("");
                 item = item.Remove(i, j - i + 1);
                 return token.ToString();
             }
@@ -138,22 +138,27 @@ public class Analyzer
                 int j = i + 1;
                 while (item[j] != '"')
                     j++;
-                token.Append("(literal constant, ").Append(item.Substring(i, j - i + 1)).Append(") ");
+                token.Append("Qouta Constant: ").Append(item.Substring(i, j - i + 1)).Append("");
                 item = item.Remove(i, j - i + 1);
                 return token.ToString();
             }
             else
-                if (item[i + 1].ToString().Equals(" ") || CheckDelimiter(item[i + 1].ToString()) == true || CheckOperator(item[i + 1].ToString()) == true)
+                if (
+                    item[i + 1].ToString().Equals(" ") || 
+                    CheckSpecialCharacters(item[i + 1].ToString())|| 
+                    CheckOperator(item[i + 1].ToString()))
             {
-                if (Parse(item.Substring(0, i + 1)).Contains("numerical constant") && item[i + 1] == '.')
+                if (Parse(item.Substring(0, i + 1)).Contains("Numerical Constant: ") && item[i + 1] == '.')
                 {
                     int j = i + 2;
-                    while (item[j].ToString().Equals(" ") == false && CheckDelimiter(item[j].ToString()) == false && CheckOperator(item[j].ToString()) == false)
+                    while (
+                            item[j].ToString().Equals(" ") == false &&
+                            CheckSpecialCharacters(item[j].ToString()) == false && 
+                            CheckOperator(item[j].ToString()) == false)
                         j++;
-                    int ok;
-                    if (Int32.TryParse(item.Substring(i + 2, j - i - 2), out ok))
+                    if (int.TryParse(item.Substring(i + 2, j - i - 2), out _))
                     {
-                        token.Append("(numerical constant, ").Append(item.Substring(0, j)).Append(") ");
+                        token.Append("Numerical Constant: ").Append(item.Substring(0, j)).Append("");
                         item = item.Remove(0, j);
                         return token.ToString();
                     }
