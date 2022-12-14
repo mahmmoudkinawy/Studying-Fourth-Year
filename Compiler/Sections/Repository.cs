@@ -144,6 +144,5 @@ public static class Repository
             "^=",
             "<<=",
             ">>=",
-            "."
     };
 }
