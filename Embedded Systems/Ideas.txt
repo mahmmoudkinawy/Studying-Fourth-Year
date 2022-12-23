@@ -1,0 +1,2 @@
+Earliest-deadline-first
+First-come-first-served (FCFS)
